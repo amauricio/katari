@@ -1,0 +1,27 @@
+
+<%  result.each do |person| %>
+
+<div class='item'>
+	<div class='item-wrap'>
+		<a href='/detail/<%=person["id"]%>'>
+			<img src='<%=person["photo"]%>'/>
+		</a>
+		<div class='meta'>
+			<a href='/detail/<%=person["id"]%>'>
+				<h2><%=person["name"]%></h2>
+				<small>Político</small>
+			</a>
+			<div class='wrap-sentiment'>
+				<div class='graph'>
+					<img src='<%= person["graph"]%>' />
+				</div>
+				<!--
+				<div class='value'>
+					<%= person["score"]  %>
+				</div>-->
+			</div>
+		</div>
+	</div>
+</div>
+
+<% end %>
