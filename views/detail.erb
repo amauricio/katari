@@ -1,1 +1,67 @@
-detail.erb
+<div class='detail'>
+	<div class='left'>
+		<img src='<%= person['photo'] %>' />
+		<h2><%= person['name'] %></h2>
+	</div>
+	<div class='meta-data'>
+		<img src="/graphs/<%= person['id'] %>.png">
+	</div>
+</div>
+<div class='main-news'>
+	<%  news["response"].each do |item| %>
+		<div class='item-content'>
+			<div class='entities'>
+				<%item["entities"].sample(5).each do |ent|%>
+					<span><%=ent["text"]%></span>
+				<%end%>
+			</div>
+			<div class='item-detail'>
+				
+				<div class='media'>
+					<a href='<%=item["link"]%>'>
+						<img src='<%=item["cover"]%>'/>
+					</a>
+				</div>
+				<div class='meta'>
+					<h4>
+						<a href='<%=item["link"]%>'>
+							<%=item["title"]%>
+						</a>
+					</h4>
+					<div class='info'>
+					<small>
+							<a href="<%=item["source"]["url"]%>"> <b><%=item["source"]["name"]%> </b> </a> - <%=item["created_at"]%> 
+					</small>
+					<%=item["matches"]['sentences'][0]['text']
+						.insert(item["matches"]['sentences'][0]['position'][1], '</b>')
+						.insert(item["matches"]['sentences'][0]['position'][0], '<b>')%>
+					
+					</div>
+				</div>	
+				<div class='addon'>
+					
+				</div>
+			</div>
+			<div class='item-related'>
+				<%  item['related'].sample(2).each do |rel| %>
+					<div class='rel'>
+						<div class='thumb'>
+
+							<a href='<%=rel["link"]%>'><img src="<%=rel["image"]%>"></a>
+						</div>
+						<div class='content'>
+							<small><%=rel["created_at"]%></small>
+							<a href='<%=rel["link"]%>'>
+								<%=rel["title"]%>
+							</a>
+						</div>
+					</div> 
+				<% end %>
+				
+			</div>
+		</div>
+
+
+
+	<% end %>
+</div>

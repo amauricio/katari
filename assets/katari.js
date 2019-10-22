@@ -6,7 +6,24 @@ window.onload = function(){
     append: '.item',
     history: false,
   });*/
+    var elem = document.querySelector('.content');
 
+    $.ajax({
+      url : '/persons',
+      success : function(response){
+        $('.main').html(response).hide();
+        setTimeout(function(){
+          $('.main').show();
+          var msnry = new Masonry( elem, {
+            // options
+            horizontalOrder: true,
+
+            itemSelector: '.item',
+          });
+        }, 500);
+       
+      }
+    });
 
 }
 
