@@ -80,24 +80,8 @@ get '/request_persons' do
 			"photo":"https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Pedro_Olaechea_AC.jpg/220px-Pedro_Olaechea_AC.jpg"},
 			{
 			"id":"100180",
-			"name":"Martin Vizcarra",
-			"photo":"https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Mart%C3%ADn_Vizcarra_Cornejo_%28cropped%29_%28cropped%29.png/800px-Mart%C3%ADn_Vizcarra_Cornejo_%28cropped%29_%28cropped%29.png"},
-		{
-			"id":"100170",
-			"name":"Keiko Fujimori", 
-			"photo":"https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Keiko_Fujimori_2.jpg/220px-Keiko_Fujimori_2.jpg"}, 
-		{
-			"id":"100120",
-			"name":"Cesar Acuna",
-			"photo":"https://upload.wikimedia.org/wikipedia/commons/6/6b/C%C3%A9sar_Acu%C3%B1a_Peralta_-_CAP.jpg"},
-		{
-			"id":"100110",
-			"name":"Pedro Pablo kuczynski",
-			"photo":"https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/Pedro_Pablo_Kuczynski_2016_%28cropped%29.jpg/230px-Pedro_Pablo_Kuczynski_2016_%28cropped%29.jpg"}, 
-		{
-			"id":"100220",
-			"name":"Luis Castañeda",
-			"photo":"https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Lcl.JPG/1200px-Lcl.JPG"}]
+			"name":"Martín Vizcarra",
+			"photo":"https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Mart%C3%ADn_Vizcarra_Cornejo_%28cropped%29_%28cropped%29.png/800px-Mart%C3%ADn_Vizcarra_Cornejo_%28cropped%29_%28cropped%29.png"}]
 	result = []
 	for pe in persons do
 		url = 'http://copperni.co/api/v1/sentiment?q='+ pe[:name]+'&time=daily'.force_encoding('ASCII-8BIT')
@@ -106,7 +90,7 @@ get '/request_persons' do
 		headers={
 			"content-type":"application/json",
 			'x-api-key':'Boctrg4ao_hkry9cvS8T1s4Q8hwPNquxA7m_ShwFN7c'})
-
+		print(response)
 		data_render = JSON.parse(response.body)['response']
 		nmb_data = []
 		negative = 0
@@ -114,20 +98,20 @@ get '/request_persons' do
 
 		data_render['summary'].each do |s|
 			if s['polarity'] == 'positive'
-				positive = s['total']
+				positive = s['total']	
 			end
 			if s['polarity'] == 'negative'
-				negative = (s['total'] + ((1-s['total'])*0.2) )*-1
+				negative = (s['total']) #+ ((1-s['total'])*0.2) )*-1
 			end
 		end
 
-
+		score = negative  #+ (positive*0.2)
+		
 		new_range_min = 0
 		new_range_max = 100
 		negative = (((negative - (-1)) * (new_range_max - new_range_min)) / (1 - (-1))) + 0
 		positive = (((positive - (-1)) * (new_range_max - new_range_min)) / (1 - (-1))) + 0
 
-		score = negative  + (positive*0.2)
 
 		data_render['history'].each do |h|
 			total = h['total']**2
@@ -142,12 +126,13 @@ get '/request_persons' do
 		to_data = {
 			"id": pe[:id],
 			"photo": pe[:photo], 
-			"score": 100 - (score).round(0),
+			"score": (data_render['summary']),
 			"graph": 'graphs/'+pe[:id]+'.png',
 			"name": nname,
 			"data": data_render}
 		result.append(pe[:id])
 		$Redis.set ("person_" + pe[:id]), to_data.to_json
+
 		
 
 	end

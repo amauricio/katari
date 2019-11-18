@@ -166,7 +166,7 @@ align-content: center;
 	margin-top: 18px;
 	font-size: 22px;
 }
-.detail.left img{
+.detail .left img{
 	width: 100%;
 	max-width: 220px;
 }
