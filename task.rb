@@ -77,16 +77,11 @@ def pushExpLaboral(hash)
 					update_one({"$set"=> {"listaCandidato.$.expLaboral" => items} }, { :upsert => true })
 end
 
-def pushExpLaboral(hash)
-	construct_id = (hash[:idHojaVida].to_s) + '-0-ASC'
-	url = 'https://plataformaelectoral.jne.gob.pe/HojaVida/GetAllHVExpeLaboral?Ids='+construct_id.to_s+''.force_encoding('ASCII-8BIT')
-	response = RestClient.get(url, 
-	headers=headers)
-	data_render = JSON.parse(response.body)
-	items = data_render['data']
-	$client[:jne].find({"_id" => hash[:id], "listaCandidato.idCandidato"=>hash[:idCandidato]}). 
-					update_one({"$set"=> {"listaCandidato.$.expLaboral" => items} }, { :upsert => true })
+def pushEduBasica(hash)
+	#parecido al de arriba
 end
+
+#y demas
 
 
 print "\n\nSTARTING APP\n"
