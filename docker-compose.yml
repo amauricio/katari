@@ -1,13 +1,15 @@
 version: '3'
 services:
-  web:
+  katari_web:
     build: .
     volumes:
       - .:/app/
     ports:
       - "4567:4567"
     depends_on:
-      - redis
+      - katari_mongo
 
-  redis:
-    image: redis
+  katari_mongo:
+    image: mongo:4.2
+    volumes:
+      - ./db/:/data/db
