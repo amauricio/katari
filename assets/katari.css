@@ -402,15 +402,7 @@ vertical-align: middle;
 	max-width: 300px;
 	margin-right: 17px;
 }
-@media (max-width:700px){
-	.advanced{
-		flex-direction: column;
-	}
 
-	.advanced .block{
-		margin-bottom: 10px;
-	}
-}
 .advanced select{
 	width: 100%;
 }
@@ -475,4 +467,19 @@ vertical-align: middle;
 .select2-container--default .select2-selection--single .select2-selection__arrow{
 	top: 8px;
 	right: 5px;
+}
+
+
+
+@media (max-width:700px){
+	.advanced{
+		flex-direction: column;
+	}
+
+	.advanced .block{
+		margin-bottom: 10px;
+	}
+	.item-content{
+		width: 100%;
+	}
 }
