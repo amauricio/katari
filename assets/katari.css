@@ -396,15 +396,20 @@ vertical-align: middle;
 	padding-top: 30px;
 	display: flex;
 }
-@media (max-width:700px){
-	.advanced{
-		flex-direction: column;
-	}
-}
+
 .advanced .block{
 	flex:1;
 	max-width: 300px;
 	margin-right: 17px;
+}
+@media (max-width:700px){
+	.advanced{
+		flex-direction: column;
+	}
+
+	.advanced .block{
+		margin-bottom: 10px;
+	}
 }
 .advanced select{
 	width: 100%;
