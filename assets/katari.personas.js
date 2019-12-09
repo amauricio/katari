@@ -27,6 +27,9 @@ window.onload = function(){
   }
 
   $('.select').select2();
+  $('.select').select2({
+        minimumResultsForSearch: Infinity
+      });
   var url__main = $('.main').data('url');
 
   elem = document.querySelector('.main');
