@@ -1,5 +1,9 @@
 FROM openresty/openresty:trusty
 
+ADD /etc/letsencrypt/0000_csr-certbot.pem /home/0000_csr-certbot.csr
+ADD /etc/letsencrypt/0000_key-certbot.pem /home/0000_key-certbot.key
+
+
 ##create filter folder
 RUN mkdir /filters
 

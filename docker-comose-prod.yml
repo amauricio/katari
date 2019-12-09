@@ -6,6 +6,7 @@ services:
     depends_on:
     - katari_web
     ports:
+    - 443:9443
     - 80:9000
 
   katari_web:
