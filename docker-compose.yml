@@ -6,7 +6,7 @@ services:
     depends_on:
     - katari_web
     ports:
-    - 80:9000
+    - 9001:9000
 
   katari_web:
     build: .
