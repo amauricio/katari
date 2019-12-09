@@ -2,10 +2,11 @@
 <html>
 <head>
 
-	<title>Katari</title>
+	<title>yasha</title>
 	<script src="https://unpkg.com/infinite-scroll@3/dist/infinite-scroll.pkgd.min.js"></script>
 	<script type="text/javascript" src='https://unpkg.com/masonry-layout@4.2.2/dist/masonry.pkgd.min.js'></script>
 	<link href="https://fonts.googleapis.com/css?family=Merriweather&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
 
 	<link rel="stylesheet" type="text/css" href="/katari.css">
 	<link rel="stylesheet" type="text/css"
@@ -13,21 +14,21 @@
 </head>
 <body>
 	<div class='container'>
-		<h1><a href="/">Katari</a></h1>
+		<h1><a href="/">yasha</a></h1>
 		<div class='tabs'>
-			<a href="" class='active'>Personas</a>
-			<a href="">Noticias</a>
+                    
+			<a href="/" <% if active =='personas' %>class='active'<% end %>>Personas</a>
+			<a href="/partidos" <% if active =='partidos' %>class='active'<% end %>>Partidos</a>
 		</div>
 		<div class='content'>
-			    <%= yield %>
+		    <%= yield %>
 		</div>
 	</div>
 	<script
 		  src="https://code.jquery.com/jquery-3.4.1.min.js"
 		  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
 		  crossorigin="anonymous"></script>
-	<script type="text/javascript" src='/graph.min.js'></script>
-	<script type="text/javascript" src='/katari.js'></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
 	
 </body>
 </html>

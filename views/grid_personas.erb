@@ -1,0 +1,49 @@
+<%  result.each do |persona| %>
+<div class='item'>
+    <div class='item-wrap'>
+        <div class='meta'>
+             <% if persona["countCargoPartidario"] >= 1 %>
+                <div style='float:right' class='tags min'>
+                    <span class='min'>Con trayectoria</span>
+                </div>
+            <% end %>        
+            <i class='icon'>
+               <img src='<%= persona["logo"]  %>' />
+                <div class='number'><%= persona['numero']%></div>
+            </i>
+            <div class='box'>
+                <b class='top-label'><%= persona['partido'].titleize %></b>
+                <h2>
+                    <a href='/detail/<%= persona["id"]  %>'><%= persona["nombres"].titleize  %></a>
+                </h2>
+                <small><%= persona['region'].titleize %></small>
+                <div class="tags">
+                    <span><%= (persona["age"].floor)%> años</span>
+                    <% if persona["sentencias"] > 1 %>
+                     <span class='danger'>Tiene sentencias</span>
+                    <% else %>
+                     <span class='success'>No tiene sentencias</span>
+                    <% end %>
+                     <% if persona["edSuperior"] >= 1 %>
+                     <span class='success'>Con estudios superiores</span>
+                    <% else %>
+                     <span class='danger'>Sin estudios superiores</span>
+                    <% end %>
+                     <% if persona["countExpLaboral"] >= 1 %>
+                         <% persona['expLaboral'].each do |exp| %>
+                             <% if exp["strAnioTrabajoHasta"] == "0000" %>
+                                 <span class='info min'>
+                                <b><%= exp['strOcupacionProfesion'].titleize %></b> en
+                                <%= exp['strCentroTrabajo'].titleize %>
+                                </span>
+                            <% end %>
+                         <% end %>
+                        
+                    <% end %>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<% end %>

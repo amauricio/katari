@@ -1,67 +1,175 @@
 <div class='detail'>
 	<div class='left'>
-		<img src='<%= person['photo'] %>' />
-		<h2><%= person['name'] %></h2>
+		 <i class='icon'>
+           <img src='<%= person["logo"]  %>' />
+            <div class='number'><%= person['numero']%></div>
+        </i>
+    	<span><%= person['partido'].titleize %></span>
+		<h2><%= person['nombres'].titleize %></h2>
+        <b class='top-label'><%= person['partido'].titleize %></b>
 	</div>
-	<div class='meta-data'>
-		<img src="/graphs/<%= person['id'] %>.png">
+	<div class='info-content'>
+ 		<div class='tags'>
+        	<span>DNI: <%= person['dni'] %></span>
+        	<span>Edad: <%= person['age'].floor %></span>
+        	<span>Region: <%= person['region'].titleize %></span>
+        	  <% if person["sentencias"] > 1 %>
+             <span class='danger'>Tiene sentencias</span>
+            <% else %>
+             <span class='success'>No tiene sentencias</span>
+            <% end %>
+              <% if person["edSuperior"] >= 1 %>
+           	  <span class='success'>Con estudios superiores</span>
+            <% else %>
+             <span class='danger'>Sin estudios superiores</span>
+            <% end %>
+        </div>
 	</div>
 </div>
+
+<div class='detail'>
+
+        <div class='cards'>
+        	<h3>Experiencia laboral</h3>
+              <% if person["countExpLaboral"] >= 1 %>
+                 <% person['expLaboral'].sort_by {|obj| -obj['strAnioTrabajoDesde'].to_i}.each do |exp| %>
+                  
+                     <div class='card'>
+                     	<div class='heading'>
+	                     	<span class='label'>
+	                    	<%=  exp["strAnioTrabajoDesde"] %>
+	                     		-
+	                     		   <% if exp["strAnioTrabajoHasta"] == "0000" %>
+	                     		   Actualidad
+	                    <% else %>
+	                    	<%=  exp["strAnioTrabajoHasta"] %>
+	                    <% end %>
+	                     	</span>
+	                     </div>
+                        <b><%= exp['strOcupacionProfesion'].titleize %></b>
+                        <br>En
+                        <%= exp['strCentroTrabajo'].titleize %>
+                     	<div class='footer'>
+	                        <%= exp['strTrabajoPais'].titleize %> -
+	                        <%= exp['strTrabajoDepartamento'].titleize %>
+                     	</div>
+                    </div>
+                 <% end %>
+                
+            <% else %>
+            <b>No registra ninguna</b>
+            <% end %>
+        </div>
+</div>
+
+<div class='detail'>
+
+        <div class='cards'>
+        	<h3>Educación superior</h3>
+              <% if person["edSuperior"] >= 1 %>
+              	<% person['eduPosgrado'].each do |edu| %>
+                  
+                     <div class='card'>
+                     	<div class='heading'>
+	                     	<span class='label-2'>
+		                   		<%= edu['strAnioPosgrado'] %>
+	                     	</span>
+	                     </div>
+                       <b><%= edu['strEspecialidadPosgrado'].titleize %></b>
+                        <br>
+                        <%= edu['strCenEstudioPosgrado'].titleize %>
+                        <div class='footer'>
+		                        	Grado: 
+		              <% if edu["strEsMaestro"] =="1" %>
+		              	Maestro
+		              <% elsif edu["strEsDoctor"] =="1" %>
+		              Doctor
+             			<% end %>
+
+                     	</div>
+                    </div>
+                 <% end %>
+                 <% person['eduUniversitaria'].each do |edu| %>
+                  
+                     <div class='card'>
+                     	<div class='heading'>
+	                     	<span class='label-2'>
+		                   		<%= edu['strAnioBachiller'] %>
+	                     	</span>
+	                     </div>
+                       <b><%= edu['strCarreraUni'].titleize %></b>
+                        <br>
+                        <%= edu['strUniversidad'].titleize %>
+                    </div>
+                 <% end %>
+                  <% person['noUniversitaria'].each do |edu| %>
+                  
+                     <div class='card'>
+                     	<div class='heading'>
+	                     	<span class='label-2'>
+		                   		No universitaria
+	                     	</span>
+	                     </div>
+                       <b><%= edu['strCarreraNoUni'].titleize %></b>
+                        <br>
+                        <%= edu['strCentroEstudioNoUni'].titleize %>
+                    </div>
+                 <% end %>
+                  <% person['eduTecnico'].each do |edu| %>
+                  
+                     <div class='card'>
+                     	<div class='heading'>
+	                     	<span class='label-2'>
+		                   		Carrera técnica
+	                     	</span>
+	                     </div>
+                       <b><%= edu['strCarreraTecnico'].titleize %></b>
+                        <br>
+                        <%= edu['strCenEstudioTecnico'].titleize %>
+                    </div>
+                 <% end %>
+                
+            <% else %>
+            <b>No registra ninguna</b>
+            <% end %>
+        </div>
+</div>
 <div class='main-news'>
-	<%  news["response"].each do |item| %>
-		<div class='item-content'>
-			<div class='entities'>
-				<%item["entities"].sample(5).each do |ent|%>
-					<span><%=ent["text"]%></span>
-				<%end%>
-			</div>
-			<div class='item-detail'>
-				
-				<div class='media'>
-					<a href='<%=item["link"]%>'>
-						<img src='<%=item["cover"]%>'/>
-					</a>
-				</div>
-				<div class='meta'>
-					<h4>
-						<a href='<%=item["link"]%>'>
-							<%=item["title"]%>
-						</a>
-					</h4>
-					<div class='info'>
-					<small>
-							<a href="<%=item["source"]["url"]%>"> <b><%=item["source"]["name"]%> </b> </a> - <%=item["created_at"]%> 
-					</small>
-					<%=item["matches"]['sentences'][0]['text']
-						.insert(item["matches"]['sentences'][0]['position'][1], '</b>')
-						.insert(item["matches"]['sentences'][0]['position'][0], '<b>')%>
-					
+	<div class='detail'>
+		<%  news.each do |item| %>
+		<%  if item["last_news"].count > 0 %>
+
+			<%  item["last_news"].each do |item| %>
+				<div class='item-content'>
+					<div class='entities'>
+						<span><%=item["date"]%> </span>
 					</div>
-				</div>	
-				<div class='addon'>
-					
+					<div class='item-detail'>
+						
+						<div class='meta'>
+							<h4>
+								<a href='<%=item["link"]%>'>
+									<%=item["title"]%>
+								</a>
+							</h4>
+							<div class='info'>
+							<small>
+								 <b><%=item["source"]%> </b>
+							</small>
+							
+							</div>
+						</div>	
+						<div class='addon'>
+							
+						</div>
+					</div>
 				</div>
-			</div>
-			<div class='item-related'>
-				<%  item['related'].sample(2).each do |rel| %>
-					<div class='rel'>
-						<div class='thumb'>
 
-							<a href='<%=rel["link"]%>'><img src="<%=rel["image"]%>"></a>
-						</div>
-						<div class='content'>
-							<small><%=rel["created_at"]%></small>
-							<a href='<%=rel["link"]%>'>
-								<%=rel["title"]%>
-							</a>
-						</div>
-					</div> 
-				<% end %>
-				
-			</div>
-		</div>
-
-
-
+			<% end %>
+	<% else %>
+			No hay noticias que mostrar
+			<% end %>
 	<% end %>
+	
+</div>
 </div>

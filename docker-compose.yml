@@ -1,5 +1,13 @@
 version: '3'
 services:
+  server:
+    build: ./openresty
+    image: server:1.0
+    depends_on:
+    - katari_web
+    ports:
+    - 9000:9000
+    
   katari_web:
     build: .
     volumes:

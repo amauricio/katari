@@ -1,0 +1,70 @@
+<div class='filters'>
+    <input type="text" placeholder="Busca por nombre o apellidos" class='instantSearch' name="">
+    <div class='advanced'>
+    	<div class='block'>
+	    	<label>Región</label>
+	    	<select id='cbRegion' class='select'>
+	    		<option value="1">Todos</option>
+	    		<option value="Amazonas">Amazonas</option>
+				<option value="Ancash">Ancash</option>
+				<option value="Apurimac">Apurímac</option>
+				<option value="Arequipa">Arequipa</option>
+				<option value="Ayacucho">Ayacucho</option>
+				<option value="Cajamarca">Cajamarca</option>
+				<option value="Callao">Callao</option>
+				<option value="Cusco">Cusco</option>
+				<option value="Huancavelica">Huancavelica</option>
+				<option value="Huanuco">Huánuco</option>
+				<option value="Ica">Ica</option>
+				<option value="Junin">Junín</option>
+				<option value="La Libertad">La Libertad</option>
+				<option value="Lambayeque">Lambayeque</option>
+				<option value="Lima" selected='true'>Lima</option>
+				<option value="Loreto">Loreto</option>
+				<option value="Madre de Dios">Madre de Dios</option>
+				<option value="Moquegua">Moquegua</option>
+				<option value="Pasco">Pasco</option>
+				<option value="Piura">Piura</option>
+				<option value="Puno">Puno</option>
+				<option value="San Martin">San Martín</option>
+				<option value="Tacna">Tacna</option>
+				<option value="Tumbes">Tumbes</option>
+				<option value="Ucayali">Ucayali</option>  		
+	    	</select>
+	    </div>
+    	<div class='block'>
+	    	<label>Sentencias</label>
+	    	<select id='cbSentencias' class='select'>
+				<option value='1'>Que no tenga sentencias</option>    		
+				<option value='2'>Me da igual</option>    		
+	    	</select>
+	    </div>
+	    <div class='block'>
+	    	<label>Estudios superiores</label>
+	    	<select id='cbEstudios' class='select'>
+				<option value='1'>Al menos uno</option>    		
+				<option value='2'>Me da igual</option>    		
+	    	</select>
+	    </div>
+	    <div class='block'>
+	    	<label>Trayectoria política</label>
+	    	<select id='cbCargo' class='select'>
+				<option value='1'>Al menos una</option>    		
+				<option value='2'>Me da igual</option>    		
+	    	</select>
+	    </div>
+    </div>
+</div>
+	
+
+	<div class='main' id='personas' data-url='/grid-personas'>
+		
+			
+
+	</div>
+<div class="page-load-status">
+  <p class="infinite-scroll-request"><img width="200" src="/loading.gif" /></p>
+  <p class="infinite-scroll-last">End of content</p>
+  <p class="infinite-scroll-error">No more pages to load</p>
+</div>
+<script type="text/javascript" src='/katari.personas.js'></script>

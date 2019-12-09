@@ -1,0 +1,27 @@
+as
+<%  result.each do |partido| %>
+
+<div class='item'>
+	<div class='item-wrap'>
+		<div class='meta'>
+			<i class='icon'>
+				<img src='<%= partido['image']%> '/>
+			</i>
+			<div class='box'>
+				<h2>
+					<%= partido["orgPolitica"].titleize  %>
+				</h2>
+				<small>Partido político</small>
+				<div class="tags">
+					<span><%= partido["candidatos"]%> Candidatos</span>
+
+					<span><%= partido["sentenciaPenal"].length + partido["sentenciaOblig"].length %> sentencias</span>
+				
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+
+<% end %>

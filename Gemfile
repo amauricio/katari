@@ -13,3 +13,4 @@ gem 'rmagick', :require => false
 gem 'gruff'
 gem 'addressable'
 gem 'rss'
+gem 'activesupport'
