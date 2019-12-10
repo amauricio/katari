@@ -366,7 +366,7 @@ end
 if ARGV[0] == 'images'
 	$client[:jne].find({}).each do |document| 
 		document['listaCandidato'].each do |candidato| 
-		   if(File.exist?( './assets/images/' + candidato['idHojaVida'].to_s )) 
+		   if(File.exist?( './assets/images/' + candidato['idHojaVida'].to_s+".jpg" )) 
 		   	puts "existe " +candidato['idHojaVida'].to_s
 		   else
 			   	puts "descargando" +candidato['idHojaVida'].to_s
