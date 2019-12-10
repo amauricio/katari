@@ -364,12 +364,13 @@ end
 
 
 if ARGV[0] == 'images'
-	$client[:jne].find().each do |document| 
+	$client[:jne].find({"listaCandidato.hasImage"=>{"$exists"=>false}}).each do |document| 
 		document['listaCandidato'].each do |candidato| 
 
 			open("https://declara.jne.gob.pe/Assets/Fotos-HojaVida/"+ (candidato['idHojaVida'].to_s) +".jpg") do |image|
 			  File.open("./assets/images/"+(candidato['idHojaVida'].to_s)+".jpg", "wb") do |file|
 			    file.write(image.read)
+				candidato.update_one({"$set"=> {"hasImage" => true} })
 			  end
 			  sleep(2)
 			end
