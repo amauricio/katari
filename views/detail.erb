@@ -134,6 +134,35 @@
             <% end %>
         </div>
 </div>
+<div class='detail'>
+
+        <div class='cards'>
+        	<h3>Sentencias</h3>
+              <% if person["sentencias"] >= 1 %>
+                 <% person['sentenciaOblig'].sort_by {|obj| -obj['intItemSentenciaObliga'].to_i}.each do |obl| %>
+                  
+                     <div class='card'>
+                     	<div class='heading'>
+	                     	<span class='label-3'>
+	                    	<%=  obl["strExpedienteObliga"] %>
+	                     	</span>
+	                     </div>
+                        <b><%= obl['strOrganoJuridicialObliga'].titleize %></b>
+                        <br>
+	                        <%= obl['strMateriaSentencia'].titleize %> 
+                        
+                        
+                     	<div class='footer'>
+	                        <%= obl['strFalloObliga'].titleize %> 
+                     	</div>
+                    </div>
+                 <% end %>
+                
+            <% else %>
+            <b>No registra ninguna</b>
+            <% end %>
+        </div>
+</div>
 <div class='main-news'>
 	<div class='detail'>
 		<%  news.each do |item| %>

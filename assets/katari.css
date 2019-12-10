@@ -439,6 +439,13 @@ vertical-align: middle;
 	display: inline-block;
 	border-radius: 4px;
 }
+.cards .card .label-3{
+	background: #e74c3c;
+	padding: 7px;
+	color:#fff;
+	display: inline-block;
+	border-radius: 4px;
+}
 .cards .card .footer{
 	padding-top: 10px;
 	font-size: 14px;
