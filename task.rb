@@ -363,6 +363,20 @@ if ARGV[0] == "cvs"
 end
 
 
+if ARGV[0] == 'images'
+	$client[:jne].find().each do |document| 
+		document['listaCandidato'].each do |candidato| 
+
+			open("https://declara.jne.gob.pe/Assets/Fotos-HojaVida/"+ (candidato['idHojaVida'].to_s) +".jpg") do |image|
+			  File.open("./assets/images/"+(candidato['idHojaVida'].to_s)+".jpg", "wb") do |file|
+			    file.write(image.read)
+			  end
+			  sleep(2)
+			end
+		end
+	end
+
+end
 if ARGV[0] == 'news'
 
 	agr = [{"$group" => {:_id => "$idOrganizacionPolitica", :orgPolitica => { "$max" => "$strOrganizacionPolitica" } }}];
