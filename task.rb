@@ -370,12 +370,16 @@ if ARGV[0] == 'images'
 		   	puts "existe " +candidato['idHojaVida'].to_s
 		   else
 			   	puts "descargando" +candidato['idHojaVida'].to_s
-				open("https://declara.jne.gob.pe/Assets/Fotos-HojaVida/"+ (candidato['idHojaVida'].to_s) +".jpg") do |image|
-				  File.open("./assets/images/"+(candidato['idHojaVida'].to_s)+".jpg", "wb") do |file|
-				    file.write(image.read)
-				  end
-				  sleep(2)
-				end
+			   	begin
+					open("https://declara.jne.gob.pe/Assets/Fotos-HojaVida/"+ (candidato['idHojaVida'].to_s) +".jpg") do |image|
+					  File.open("./assets/images/"+(candidato['idHojaVida'].to_s)+".jpg", "wb") do |file|
+					    file.write(image.read)
+					  end
+					  sleep(1)
+					end
+			    rescue OpenURI::HTTPError => ex
+				   	puts "no existe" +candidato['idHojaVida'].to_s
+			    end
 			end
 		end
 	end
