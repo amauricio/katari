@@ -369,6 +369,7 @@ if ARGV[0] == 'images'
 		   if(File.exist?( './assets/images/' + candidato['idHojaVida'].to_s )) 
 		   	puts "existe " +candidato['idHojaVida'].to_s
 		   else
+			   	puts "descargando" +candidato['idHojaVida'].to_s
 				open("https://declara.jne.gob.pe/Assets/Fotos-HojaVida/"+ (candidato['idHojaVida'].to_s) +".jpg") do |image|
 				  File.open("./assets/images/"+(candidato['idHojaVida'].to_s)+".jpg", "wb") do |file|
 				    file.write(image.read)
