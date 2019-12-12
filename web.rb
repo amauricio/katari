@@ -344,7 +344,7 @@ get '/grid-personas' do
 	   		page = (params[:page].to_i-1)
 	   end
 	   agr<< { "$sort"=> {"nombres"=>1} }
-	   agr<< { "$skip"=> (page) * 20}} }
+	   agr<< { "$skip"=> (page) * 20 }
 	   agr<< {"$limit"=> 20 }
 
 	   results = $client[:jne].aggregate(agr, {allow_disk_use: true})
