@@ -1,4 +1,6 @@
 <div class='detail'>
+	  <div class='preview-image' style='background-image: url("https://yasha.rocks/images/<%= person['idHojaVida'] %>.jpg")'>
+	  </div>
 	<div class='left'>
 		 <i class='icon'>
            <img src='<%= person["logo"]  %>' />
@@ -6,7 +8,7 @@
         </i>
     	<span><%= person['partido'].titleize %></span>
 		<h2><%= person['nombres'].titleize %></h2>
-        <b class='top-label'><%= person['partido'].titleize %></b>
+        <b class='top-label'><%= person['region'].titleize %></b>
 	</div>
 	<div class='info-content'>
  		<div class='tags'>

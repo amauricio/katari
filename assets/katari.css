@@ -126,6 +126,21 @@ h1 a{
 	background: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(255,255,255,0) 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#000000', endColorstr='#ffffff', GradientType=0 );
 }
+.detail .preview-image{
+background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+	position: relative;
+	width: 150px;
+	height: 150px;
+	vertical-align: bottom;
+	font-weight: bold;
+	margin-right: 15px;
+	border:2px solid #666;
+	border-radius: 10px;
+	text-align: center;
+	display: inline-block;
+}
 .item-wrap .preview-image{
 	background-size: cover;
 	background-position: center;
