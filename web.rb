@@ -52,7 +52,7 @@ end
 
 def base()
 	return [
-			 
+	 { "$sort"=> {"idExpediente"=>1} },
       {"$match"=> { "listaCandidato.expLaboral.idHojaVida"=> {"$exists"=>true} } },
      {"$unwind"=> "$listaCandidato"},
      {"$unwind"=> "$listaCandidato.sentenciaOblig"},
@@ -244,7 +244,9 @@ end
 get '/grid-partidos' do
 	result= []
 	agr = [
-			 
+		
+	 { "$sort"=> {"idExpediente"=>1} },
+
      {"$match"=> { "listaCandidato.expLaboral.idHojaVida"=> {"$exists"=>true} } },
      {"$unwind"=> "$listaCandidato"},
      {"$unwind"=> "$listaCandidato.sentenciaOblig"},
@@ -288,7 +290,6 @@ get '/grid-partidos' do
 	   		page = (params[:page].to_i-1)
 	   end
 
-	   agr<<{ "$sort"=> {"orgPolitica"=>1} }
 	   agr<< { "$skip"=> (page) * 20 }
 	   agr<< {"$limit"=> 20 }
 
@@ -342,8 +343,8 @@ get '/grid-personas' do
 	   if (params[:page].to_i) > 0
 	   		page = (params[:page].to_i-1)
 	   end
-	   agr<<{ "$sort"=> {"expLaboral.strAnioTrabajoDesde"=>-1} }
-	   agr<< { "$skip"=> (page) * 20 }
+	   agr<< { "$sort"=> {"nombres"=>1} }
+	   agr<< { "$skip"=> (page) * 20}} }
 	   agr<< {"$limit"=> 20 }
 
 	   results = $client[:jne].aggregate(agr, {allow_disk_use: true})
