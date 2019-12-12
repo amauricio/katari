@@ -69,6 +69,7 @@ def base()
 
      {"$group"=> {"_id"=>"$listaCandidato.idCandidato", 
      	 "id" => {"$first"=>"$listaCandidato.idCandidato"},
+     	 "idHojaVida" => {"$first"=>"$listaCandidato.idHojaVida"},
          "nombres"=>{"$first"=>"$listaCandidato.strCandidato"},
          "logo" => {"$first"=>"$image"}, 
          "region" => {"$first"=> "$strRegion"}, 
@@ -91,6 +92,7 @@ def base()
          }},
          
          {"$project"=> {"_id"=>0, 
+         	"idHojaVida"=>1,
          		"image"=>1,"logo"=>1,"region"=>1,"id"=>1, "numero"=>1,"dni"=>1,"age"=>
 
          		 {"$divide" => [{ "$subtract"=> [ Date.today, { "$dateFromString"=> {

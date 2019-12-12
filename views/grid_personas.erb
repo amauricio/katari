@@ -1,17 +1,21 @@
 <%  result.each do |persona| %>
 <div class='item'>
     <div class='item-wrap' style='cursor: pointer' onclick="javascript:location.href='/detail/<%= persona["id"]  %>'">
+        
         <div class='meta'>
              <% if persona["countCargoPartidario"] >= 1 %>
                 <div style='float:right' class='tags min'>
                     <span class='min'>Con trayectoria</span>
                 </div>
             <% end %>        
-            <i class='icon'>
+            <div class='icon'>
+                    <div class='preview-image' style='background-image: url("https://yasha.rocks/images/<%= persona['idHojaVida'] %>.jpg")'>
+            </div>
                <img src='<%= persona["logo"]  %>' />
                 <div class='number'><%= persona['numero']%></div>
-            </i>
+            </div>
             <div class='box'>
+                
                 <b class='top-label'><%= persona['partido'].titleize %></b>
                 <h2>
                     <a href='/detail/<%= persona["id"]  %>'><%= persona["nombres"].titleize  %></a>
