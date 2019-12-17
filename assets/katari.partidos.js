@@ -57,20 +57,8 @@ window.onload = function(){
     return f;
 
   }
-  function reload_items(){
-       infScroll.destroy();
-       infScroll = new really__init();
-       clean__with__loading();
-       msnry.reloadItems();
-       msnry.layout();
-       infScroll.loadNextPage();
-    }
 
- 	$('#cbEstudios').on('change', function(){
-     set__value__data('estudios', $(this).val())
-     reload_items();
-
-   });
+    
 
 
 }

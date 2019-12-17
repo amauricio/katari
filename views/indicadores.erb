@@ -1,0 +1,246 @@
+
+<script src="https://www.amcharts.com/lib/4/core.js"></script>
+<script src="https://www.amcharts.com/lib/4/charts.js"></script>
+<script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
+<div class='dataset'>
+	<div class='sidebar'>
+		<a href="" class='all active'><span>TODOS</span></a>
+		<% partidos.each do |item| %>
+			<a href=''>
+				<i><img src='<%= item["image"] %>' /></i>
+				<span><%=  totem(item['orgPolitica']).titleize %></span>
+			</a>
+		<%end %> 
+	</div>
+	<div class='graphs'>
+		<div class='social-twitter panel'>
+			<h3 class='title-graph'>> Algunas Noticias</h3>
+			<div class='br-list br-3'>
+				
+				<% news.sample(9).each do | item|%>
+					<div class='br-element'>
+						<a target="_blank" href="<%=item['link']%>" class='link'></a>
+						<% if item['meta']['image'] %>
+						<div class='preview-media' style='background-image: url("<%= item['meta']['image'] %>");'></div>
+						<% end %>
+						<div class="t-content">
+							<div class="t-preview">
+								<img src="https://encrypted-tbn0.gstatic.com/faviconV2?url=<%=get_host(item['source'])%>&client=NEWS_360&size=96&type=FAVICON&fallback_opts=TYPE,SIZE,URL" >
+							</div>
+							<div class="t-info">
+								<div class="t-info-title"><%= item['meta']['title'] %>
+								</div>
+								<div class="username"><%= item['source'] %></div>
+							</div>
+						</div>
+						<div class="tweet"><%= item['meta']['description'] %></div>
+							
+
+					</div>
+				<%end%>
+				
+			</div>
+		</div>
+		<div class='social-twitter panel'>
+			<h3 class='title-graph'>> En Twitter</h3>
+			<div class='br-list br-3'>
+				<% tweets.sample(9).each do | tweet|%>
+					<div class='br-element'>
+						<a target="_blank" href="https://twitter.com/<%= tweet['user']['screen_name'] %>/status/<%= tweet['id_str'] %>" class='link'></a>
+						<div class="t-content">
+							<div class="t-preview">
+								<img src="<%= tweet['user']['profile_image_url'] %>" >
+							</div>
+							<div class="t-info">
+								<div class="t-info-title"><%= tweet['user']['name'] %>
+								</div>
+								<div class="username">@<%= tweet['user']['screen_name'] %></div>
+							</div>
+						</div>
+						<div class="tweet"><%= tweet['full_text'] %>
+							</div>
+							<% if tweet['entities']['media'] %>
+						<a href='' class='preview-media' style='background-image: url("<%= tweet['entities']['media'][0]['media_url'] %>");'>
+							<% end %>
+						</a>
+
+						<div class="t-footer"><span class="icon"><svg viewBox="0 0 24 24" class=" ts" tabindex="-1" focusable="false"><path d="M8.29,20.12A11.58,11.58,0,0,0,20,8.46c0-.18,0-.35,0-.53A8.34,8.34,0,0,0,22,5.8a8.18,8.18,0,0,1-2.35.64,4.11,4.11,0,0,0,1.8-2.27,8.21,8.21,0,0,1-2.6,1,4.1,4.1,0,0,0-7,3.74A11.64,11.64,0,0,1,3.4,4.63,4.1,4.1,0,0,0,4.67,10.1a4.07,4.07,0,0,1-1.86-.51v.05a4.1,4.1,0,0,0,3.29,4,4.09,4.09,0,0,1-1.85.07,4.1,4.1,0,0,0,3.83,2.85A8.23,8.23,0,0,1,3,18.34a8.34,8.34,0,0,1-1-.06,11.61,11.61,0,0,0,6.28,1.84"></path></svg>Twitter</span><time class="time" datetime=""><%= tweet['created_at'] %></time></div>
+					</div>
+				<% end %>
+				
+				
+			</div>
+		</div>
+		<div class='graph'>
+			<h3 class='title-graph'>> Sentencias civiles por partido</h3>
+			<div id='chartdiv' style='height: 300px;'></div>
+		</div>
+		<div class='graph'>
+			<h3 class='title-graph'>> Sentencias penales por partido</h3>
+			<div id='chartdiv2' style='height: 300px;'></div>
+		</div>
+		<div class='panel'>
+			<h3 class='title-graph'>> Congresistas disueltos
+
+			<small>(datos según JNE)</small> </h3>
+			<div class='br-list br-3 timeline-content'>
+				<%candidatos_disueltos.each do |lista|%>
+					<%lista['listaCandidato'].each do |candidato|%>
+						<div class='br-element'>
+								<div class='meta-content'>
+				                    <div class='preview-image' style='background-image: url("https://yasha.rocks/images/<%= candidato['idHojaVida'] %>.jpg")'></div>
+									<div class='meta-info'>
+									<a href="/detail/<%= candidato['idCandidato'] %>" class='title-inner'> <%=candidato['strCandidato'].titleize %> </a>
+									<ul class='timeline'>
+									<% candidato['renunciaOP'].each do |renuncia| %>
+										<% if renuncia['strTengoRenunciaOP'] == "1" %>
+											<li>
+						                    	<div class="tooltip">
+							                    	<div class='preview' style="background-image: url(/img/logo-id?id=<%= renuncia['idOrgPolRenunciaOP'] %>)"></div>
+												    <div class="top">
+												        <%= totem(renuncia['strOrgPolRenunciaOP']).titleize %>
+												        <i></i>
+												    </div>
+												</div>
+						                    	<span> 
+						                    		(<%=renuncia['strAnioRenunciaOP'] %>)
+						                    	</span>
+						                    	</li>
+										<% end %>
+									<% end %>
+									 <li>
+					                	<div class="tooltip">
+						                	<div class='preview' style="background-image: url(<%= lista['image'] %>)"></div>
+						                	 <div class="top">
+										        <%= totem(lista['strOrganizacionPolitica']).titleize %>
+										        <i></i>
+										    </div>
+						                </div>
+					                	<span> (Actualidad)</span></li>
+								</ul>
+								</div>
+								</div>
+            					
+						</div>
+					<%end%>
+				<%end%>
+			</div>
+		</div>
+
+		
+	</div>
+</div>
+<script>
+am4core.ready(function() {
+
+	new create_chart([
+		 <% sentenciados.sort_by {|obj| -obj['sentenciasObligCount'].to_i}.each do |item| %>
+			{
+				name:"<%= totem(item["_id"]).titleize %>",
+				count: <%= item["sentenciasObligCount"]  %>,
+			    image: "<%= item["image"] %>"
+			},
+		<% end %>
+		], "chartdiv");
+
+	new create_chart([
+		 <% sentenciados.sort_by {|obj| -obj['sentenciasPenalCount'].to_i}.each do |item| %>
+			{
+				name:"<%= totem(item["_id"]).titleize %>",
+				count: <%= item["sentenciasPenalCount"]  %>,
+			    image: "<%= item["image"] %>"
+			},
+		<% end %>
+		], "chartdiv2");
+
+	function create_chart(data, container){
+
+		// Create chart instance
+		var chart = am4core.create(container, am4charts.XYChart);
+
+		// Add data
+		chart.data = data;
+	    chart.paddingBottom = 60;	
+	    var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+	    categoryAxis.renderer.grid.template.disabled = true;
+
+	    categoryAxis.dataFields.category = "name";
+	    categoryAxis.renderer.labels.template.disabled = true;
+
+	    var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+	    valueAxis.renderer.labels.template.disabled = true;
+	    valueAxis.cursorTooltipEnabled = false;
+
+	    var series = chart.series.push(new am4charts.ColumnSeries);
+	    series.dataFields.valueY = "count";
+	    series.dataFields.categoryX = "name";
+	   // series.tooltipText = "{valueY.value}";
+	   // series.tooltip.pointerOrientation = "horizontal";
+	   // series.tooltip.dy = - 6;
+	    series.columnsContainer.zIndex = 100;
+
+	    var columnTemplate = series.columns.template;
+	    columnTemplate.width = am4core.percent(50);
+	    columnTemplate.maxWidth = 20;
+	    columnTemplate.column.cornerRadius(60, 60, 10, 10);
+	    columnTemplate.strokeOpacity = 0;
+
+
+	    let label = columnTemplate.createChild(am4core.Label);
+	    label.align = "center";
+	    label.valign = "top";
+	    label.fill  = "#000"
+	    label.dy = -20;
+	    label.adapter.add("text", function (text, target) {
+	        if (!target.dataItem) {
+	            return text;
+	        }
+	        let value = Math.abs(target.dataItem.dataContext.count);
+	        return target.numberFormatter.format(value, "###");
+	    });
+
+	    series.heatRules.push({ target: columnTemplate, property: "fill", dataField: "valueY", min: am4core.color("#ff9933"), max: am4core.color("#ee6611") });
+	    series.mainContainer.mask = undefined;
+
+	    var cursor = new am4charts.XYCursor();
+	    chart.cursor = cursor;
+	    cursor.lineX.disabled = true;
+	    cursor.lineY.disabled = true;
+	    cursor.behavior = "none";
+
+	    var bullet = columnTemplate.createChild(am4charts.CircleBullet);
+	    bullet.dy = 30;
+	    bullet.circle.radius = 22;
+	    bullet.valign = "bottom";
+	    bullet.align = "center";
+	    bullet.isMeasured = true;
+	    bullet.mouseEnabled = false;
+	    bullet.verticalCenter = "bottom";
+	    bullet.interactionsEnabled = false;
+
+	    var hoverState = bullet.states.create("hover");
+	    var outlineCircle = bullet.createChild(am4core.Circle);
+	    outlineCircle.adapter.add("radius", function (radius, target) {
+	        var circleBullet = target.parent;
+	        return circleBullet.circle.pixelRadius + 2;
+	    })
+
+	    chart.responsive.enabled = true;
+
+	    chart.exporting.menu = new am4core.ExportMenu();
+
+	    var image = bullet.createChild(am4core.Image);
+	    image.width = 45;
+	    image.height = 45;
+	    image.horizontalCenter = "middle";
+	    image.verticalCenter = "middle";
+	    image.propertyFields.href = "image";
+
+	    image.adapter.add("mask", function (mask, target) {
+	        var circleBullet = target.parent;
+	        return circleBullet.circle;
+	    })
+	}
+
+}); 
+</script>

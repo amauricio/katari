@@ -9,6 +9,33 @@
     	<span><%= person['partido'].titleize %></span>
 		<h2><%= person['nombres'].titleize %></h2>
         <b class='top-label'><%= person['region'].titleize %></b>
+<hr>
+        <h4>Línea de tiempo</h4>
+            <ul class='timeline'>
+                <% person['renunciaOP'].sort_by {|obj| obj['strAnioRenunciaOP'].to_i}.each do |renuncia| %>
+                    <li>
+                    	<div class="tooltip">
+	                    	<div class='preview' style="background-image: url(/img/logo-id?id=<%= renuncia['idOrgPolRenunciaOP'] %>)"></div>
+						    <div class="top">
+						        <%= totem(renuncia['strOrgPolRenunciaOP']).titleize %>
+						        <i></i>
+						    </div>
+						</div>
+                    	<span> 
+                    		(<%=renuncia['strAnioRenunciaOP'] %>)
+                    	</span>
+                    	</li>
+                <% end %>
+                <li>
+                	<div class="tooltip">
+	                	<div class='preview' style="background-image: url(<%= person['logo'] %>)"></div>
+	                	 <div class="top">
+					        <%= totem(person['partido']).titleize %>
+					        <i></i>
+					    </div>
+	                </div>
+                	<span> (Actualidad)</span></li>
+            </ul>
 	</div>
 	<div class='info-content'>
  		<div class='tags'>

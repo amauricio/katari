@@ -6,7 +6,8 @@ require 'addressable/uri'
 require 'mongo'
 require 'open-uri'
 require 'rss'
-
+require 'twitter'
+require 'nokogiri'
 
 '''
 GET https://plataformaelectoral.jne.gob.pe/HojaVida/GetAllHVDatosPersonales?param=132827-0-22-108
@@ -50,7 +51,7 @@ headers = {
 		"content-type":"application/json", 'User-Agent':"Mozilla/5.0 (Linux; Android 5.0; SM-G920A) AppleWebKit (KHTML, like Gecko) Chrome Mobile Safari (compatible; AdsBot-Google-Mobile; +http://www.google.com/mobile/adsbot.html)"}
 
 $base = "108"
-$client = Mongo::Client.new([ 'katari_mongo:27017' ], :database => 'remote')
+$client = Mongo::Client.new([ 'katari_mongo:27017' ], :database => 'remote_15_dic')
 
 def pushDatosPersonales(hash)
 	construct_id = hash[:idHojaVida].to_s + '-0-' + hash[:idOrganizacionPolitica].to_s + '-' + $base
@@ -251,8 +252,7 @@ if ARGV[0] == "partidos"
 
 	url = 'https://plataformaelectoral.jne.gob.pe/Candidato/GetExpedientesLista/108-2-------0-'.force_encoding('ASCII-8BIT')
 
-	response = RestClient.get(url, 
-	headers=headers)
+	response = RestClient::Request.execute(:method => :get, :url => url, :timeout => 100, :open_timeout => 100, :headers=>headers)
 	data_render = JSON.parse(response.body)
 
 	$client[:jne].insert_many(data_render['data'])
@@ -281,19 +281,27 @@ end
 
 
 if ARGV[0] == "cvs"
-	$client[:jne].find({'listaCandidato.eduPosgrado'=>{"$exists"=>false}}).each do |document|
+	active = false
+	$client[:jne].find({'listaCandidato.expLaboral'=>{"$exists"=>false}}).each do |document|
 		print "\n\n--\n"
 		document['listaCandidato'].each do |candidato|
+
 			idHV = candidato['idHojaVida']
 
+			if idHV.to_s == '130517'
+				print 'sssssssssss'
+				active = true
+			end
+			if active == false
+				next
+			end
 			idOrg = document['idOrganizacionPolitica']
 			idCandidato = candidato['idCandidato']
 			print candidato['idHojaVida']
 			print "\n"
 			print 'Datos...'
 			print "\n"
-			
-			<<-DOC
+
 			pushDatosPersonales({id: document['_id'],idCandidato:idCandidato, idHojaVida: idHV, idOrganizacionPolitica:idOrg})
 			print 'Exp Laboral..'
 			print "\n"
@@ -316,7 +324,6 @@ if ARGV[0] == "cvs"
 			
 			print 'Edu Univ..'
 			print "\n"
-			DOC
 
 			pushEduUniversitaria({id: document['_id'],idCandidato:idCandidato, idHojaVida: idHV})
 			
@@ -324,7 +331,6 @@ if ARGV[0] == "cvs"
 			print "\n"
 			pushPosgrado({id: document['_id'],idCandidato:idCandidato, idHojaVida: idHV})
 
-			<<-DOC
 			
 			print 'Cargos..'
 			print "\n"
@@ -353,7 +359,6 @@ if ARGV[0] == "cvs"
 			pushBienMueble({id: document['_id'],idCandidato:idCandidato, idHojaVida: idHV})
 			pushMuebleOtro({id: document['_id'],idCandidato:idCandidato, idHojaVida: idHV})
 			print "---------\n\n"
-			DOC
 			sleep(1)
 		end
 		print "\n\n--\n"
@@ -383,8 +388,9 @@ if ARGV[0] == 'images'
 			end
 		end
 	end
-
 end
+
+
 if ARGV[0] == 'news'
 
 	agr = [{"$group" => {:_id => "$idOrganizacionPolitica", :orgPolitica => { "$max" => "$strOrganizacionPolitica" } }}];
@@ -427,4 +433,81 @@ if ARGV[0] == 'news'
 		end
 	sleep(5)
 	end
+end
+
+if ARGV[0] == 'last_news'
+	$client[:last_news].drop()
+	str = URI::encode('"Elecciones 2020"')
+	url = 'https://news.google.com/rss/search?q='+str+'&hl=es-419&gl=PE&ceid=PE:es-419'
+	open(url) do |rss|
+		feed = RSS::Parser.parse(rss)
+		puts "Title: #{feed.channel.title}"
+		total_news = []
+		feed.items.each do |item|
+
+		  puts "Item: #{item.title}"
+		  puts "date: #{item.pubDate}"
+		  puts "link: #{item.link}"
+		  puts "description: #{item.description}"
+		  puts "source: #{item.source}"
+		  puts "\n\n"
+		  parse_news = {}
+		  parse_news[:title] = item.title.to_s
+		  parse_news[:link] = item.link.to_s
+		  parse_news[:description] = item.description.to_s
+		  parse_news[:source] = item.source.to_s
+		  parse_news[:date] = item.pubDate.to_s
+		  html = Nokogiri::HTML.parse(open(item.link.to_s))
+		  meta = {}
+
+		  if html.at("meta[property='og\:title']")
+			  meta['title'] = html.at("meta[property='og:title']")['content']
+		  end
+		  if html.at("meta[property='og\:description']")
+		  	meta['description'] = html.at("meta[property='og:description']")['content']
+		  end
+
+		  if html.at("meta[property='og\:url']")
+			  meta['url'] = html.at("meta[property='og:url']")['content']
+		  end
+		  if html.at("meta[property='og\:image']")
+		  	meta['image'] = html.at("meta[property='og:image']")['content']
+	 	  end
+		  parse_news[:meta] = meta
+		  print("inserting...\n")
+	      $client[:last_news].insert_one(parse_news)
+		end
+	end
+
+end
+
+if ARGV[0] == 'twitter'
+	client = Twitter::REST::Client.new do |config|
+	  config.consumer_key        = "vN7rzm4jRIHDoeJshnlqtZmS1"
+	  config.consumer_secret     = "VuTvRgclNZjU5TTcy5EhMgJpaniF1d8AyBa7ULwv4v2dr3sUpt"
+	  config.access_token        = "3289401305-MEKgybgm249bSogB2N8psWBQEyHNYdQToxYRKwU"
+	  config.access_token_secret = "UnD30V0RqVq72phHunSTg9O6TW9iE43tSqVesDaotQO0X"
+	end
+
+	users = [ {"from"=>"ConocelosPeru", "tag"=>""}, {"from"=>"JNE_Peru", "tag"=>"#ECE2020"}, 
+			{"from"=>"ONPE_oficial", "tag"=>"#EleccionesCongresales2020"}]
+	hashtags = ["#elecciones2020 peru", "#EleccionesCongresales2020", "#ECE2020"]
+
+	$client[:last_tweets].drop()
+
+	hashtags.each do |hs|
+		client.search( hs , tweet_mode: "extended", result_type: "mixed").take(20).collect do |tweet|
+			if not tweet.retweeted_status?
+				$client[:last_tweets].insert_one({ "type"=>"by_search", "keyword"=>hs, :tweet=> tweet.attrs})
+			end
+		end
+	end
+
+	
+	users.each do |user|
+		client.search("(from:#{user['from']}) "+user['tag'], tweet_mode: "extended", result_type: "recent").take(10).collect do |tweet|
+			$client[:last_tweets].insert_one({"type"=>"by_user","keyword"=>user, :tweet=> tweet.attrs})
+		end
+	end
+	
 end

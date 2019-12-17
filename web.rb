@@ -4,40 +4,47 @@ require 'sinatra'
 require 'json'
 require 'redis'
 require 'rest-client'
-require 'gruff'
 require 'uri'
 require 'addressable/uri'
 require 'mongo'
 require 'active_support/inflector'
 require 'open-uri'
 require 'rss'
+require 'nokogiri'
 
 Mongo::Logger.logger = Logger.new('mongo.public.log')
 $client = Mongo::Client.new([ 'katari_mongo:27017' ], :database => 'remote')
 
-def generate_sentiment_graph(hash)
-	g = Gruff::Line.new("320x120")
-	g.font = '/app/fonts/arial.ttf' # Path to a custom font
 
-	g.data :response, hash[:points]
-	g.hide_legend = true
-	g.hide_line_markers = true
-	g.theme = {   # Declare a custom theme
-	  :background_colors => %w( white white) # you can use instead: :background_image => ‘some_image.png’
-	}
-	g.write('assets/graphs/'+hash[:id]+'.png')
-
-	g = Gruff::Line.new("320x120")
-	g.font = '/app/fonts/arial.ttf' # Path to a custom font
-
-	g.data :response, hash[:points]
-	g.hide_legend = true
-	g.hide_line_markers = true
-	g.theme = {   # Declare a custom theme
-	  :background_colors => %w( white white) # you can use instead: :background_image => ‘some_image.png’
-	}
-	g.write('assets/graphs/'+hash[:id]+'_detail.png')
+def disueltos()
+	cods = [158919, 160597, 161417, 161192, 160809, 160585, 160806, 158404, 160455, 160564, 
+			160569, 161418, 158379, 160496, 157958, 161992,160523, 161193, 160807]
+	return cods
 end
+
+def totem(d)
+	m = {"PARTIDO DEMOCRATICO SOMOS PERU"=> "Somos Peru",
+		"PARTIDO APRISTA PERUANO"=> "APRA",
+		"PARTIDO POLÍTICO AVANZA PAIS - PARTIDO DE INTEGRACION SOCIAL"=> "Avanza País",
+		"AVANZA PAIS - PARTIDO DE INTEGRACION SOCIAL"=> "Avanza País",
+		"PARTIDO POLITICO NACIONAL PERU LIBRE"=> "Perú Libre",
+		"PARTIDO POLÍTICO EL FRENTE AMPLIO POR JUSTICIA, VIDA Y LIBERTAD"=> "Frente Amplio",
+		"EL FRENTE AMPLIO POR JUSTICIA, VIDA Y LIBERTAD"=> "Frente Amplio",
+		"PARTIDO POLÍTICO SOLUCION NACIONAL"=> "Solución Nacional",
+		"FRENTE POPULAR AGRICOLA FIA DEL PERU - FREPAP"=> "FREPAP"
+	}
+	if m.key?(d) 
+		return m[d]
+	end 
+	return d
+end
+
+def get_host(source)
+	html= Nokogiri::HTML.parse(source)
+	return html.at("source[url]")['url']
+end
+
+
 set :bind, '0.0.0.0'
 set :public_folder, File.dirname(__FILE__) + '/assets'
 enable :sessions
@@ -48,6 +55,8 @@ def json(hash)
   content_type :json
   hash.to_json
 end
+
+
 
 
 def base()
@@ -198,6 +207,50 @@ def base()
 	   ];
 end
 
+def partidos()
+	return  [
+		
+	 { "$sort"=> {"idExpediente"=>1} },
+
+     {"$match"=> { "listaCandidato.expLaboral.idHojaVida"=> {"$exists"=>true} } },
+     {"$unwind"=> "$listaCandidato"},
+     {"$unwind"=> "$listaCandidato.sentenciaOblig"},
+     {"$unwind"=> "$listaCandidato.sentenciaPenal"},
+     {"$group"=> {"_id"=>"$idOrganizacionPolitica", 
+         
+         "candidatos" => {"$addToSet"=>"$listaCandidato" },
+         
+         "sentenciaOblig" => {"$addToSet"=> "$listaCandidato.sentenciaOblig"  },
+         "sentenciaPenal" => {"$addToSet"=> "$listaCandidato.sentenciaPenal"  },
+         "orgPolitica"=> {"$max"=>"$strOrganizacionPolitica" },
+         "image"=> {"$first"=>"$image"}
+
+         }},
+     	
+          
+          {"$project"=> {"_id"=>1,"orgPolitica"=>1,"image"=>1, "sentenciaOblig"=> {
+                  "$filter"=> {
+                    "input"=> "$sentenciaOblig",
+                    "as"=> "item",
+                    "cond"=>  
+                            {"$eq"=> ["$$item.strTengoSentenciaObliga", "1"] }
+                        
+                  }
+              
+              },"sentenciaPenal"=> {
+                  "$filter"=> {
+                    "input"=> "$sentenciaPenal",
+                    "as"=> "item",
+                    "cond"=>  
+                            {"$eq"=> ["$$item.strTengoSentenciaPenal", "1"] }
+                        
+                  }
+              
+              }, "candidatos"=>{"$size"=>"$candidatos"}} }
+          
+    
+	   ];
+end
 
 #$client[:jne].indexes.create_one( { "listaCandidato.strCandidato"=> "text" } )
 
@@ -243,47 +296,8 @@ end
 
 get '/grid-partidos' do
 	result= []
-	agr = [
-		
-	 { "$sort"=> {"idExpediente"=>1} },
-
-     {"$match"=> { "listaCandidato.expLaboral.idHojaVida"=> {"$exists"=>true} } },
-     {"$unwind"=> "$listaCandidato"},
-     {"$unwind"=> "$listaCandidato.sentenciaOblig"},
-     {"$unwind"=> "$listaCandidato.sentenciaPenal"},
-     {"$group"=> {"_id"=>"$idOrganizacionPolitica", 
-         
-         "candidatos" => {"$addToSet"=>"$listaCandidato" },
-         
-         "sentenciaOblig" => {"$addToSet"=> "$listaCandidato.sentenciaOblig"  },
-         "sentenciaPenal" => {"$addToSet"=> "$listaCandidato.sentenciaPenal"  },
-         "orgPolitica"=> {"$max"=>"$strOrganizacionPolitica" },
-         "image"=> {"$first"=>"$image"}
-
-         }},
-     
-          
-          {"$project"=> {"_id"=>1,"orgPolitica"=>1,"image"=>1, "sentenciaOblig"=> {
-                  "$filter"=> {
-                    "input"=> "$sentenciaOblig",
-                    "as"=> "item",
-                    "cond"=>  
-                            {"$eq"=> ["$$item.strTengoSentenciaObliga", "1"] }
-                        
-                  }
-              
-              },"sentenciaPenal"=> {
-                  "$filter"=> {
-                    "input"=> "$sentenciaPenal",
-                    "as"=> "item",
-                    "cond"=>  
-                            {"$eq"=> ["$$item.strTengoSentenciaPenal", "1"] }
-                        
-                  }
-              
-              }, "candidatos"=>{"$size"=>"$candidatos"}} }
-    
-	   ];
+	
+		agr = partidos()
 
 	   page = 1
 	   if (params[:page].to_i) > 0
@@ -364,14 +378,65 @@ get '/img/logo-id' do
 		content_type 'image/jpg'
 		Base64.decode64(data["image"].split(',')[1])
 	else
-		content_type 'image/png'
-		Base64.decode64("R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==")
+	   	send_file File.expand_path('index.jpeg', settings.public_folder)
 	end
 end
 
 get '/' do
 	
 	erb :personas,:layout => :app,  :locals => {:active=>'personas', "por"=>response.body}
+end
+
+get '/indicadores' do
+	
+
+	agr = partidos()
+	agr<< {"$sort"=> {"sentencias"=>-1} }
+	agr <<  {"$group"=> {"_id"=>"$orgPolitica","image"=>{"$max"=>"$image"},"sentenciaPenal"=>{"$max"=>"$sentenciaPenal.idHojaVida"},
+	 "sentenciaOblig"=>{"$max"=>"$sentenciaOblig.idHojaVida"}}}
+                  
+    agr <<  {"$project" =>  { "_id"=>1, "image"=>1, "sentenciaPenal"=> { "$setUnion"=> [ "$sentenciaPenal", [] ] },
+                  "sentenciaOblig"=> { "$setUnion"=> [ "$sentenciaOblig", [] ] }
+                  }}
+     agr << {"$addFields"=> 
+             	{ "sentenciasObligCount" => {"$sum"=> [ {"$size"=>"$sentenciaOblig"}]},
+             	"sentenciasPenalCount" => {"$sum"=> [ {"$size"=>"$sentenciaPenal"}]}
+             }}
+	agr<< {"$sort"=> {"sentencias"=>-1} }
+
+	sentenciados = $client[:jne].aggregate(agr, {allow_disk_use: true})
+
+	candidatos_disueltos = $client[:jne].find({"listaCandidato.idCandidato"=>{"$in"=>disueltos()}})
+				.projection(
+					 {"_id"=> 0,"image"=>1,"strOrganizacionPolitica"=>1, "listaCandidato"=> {"$elemMatch"=> {"idCandidato"=> {"$in"=> disueltos() }}}}
+				)
+
+	
+	part_agr = partidos()
+	part_agr<< {"$sort"=> {"orgPolitica"=>1} }
+	partidos = $client[:jne].aggregate(part_agr, {allow_disk_use: true})
+
+	tweets_arr = []
+
+	tweets = $client[:last_tweets].find()
+	tweets.each do |item|
+		tweets_arr << item['tweet']
+	end
+
+	news_arr = []
+	news = $client[:last_news].find()
+	news.each do |item|
+		news_arr << item
+	end
+
+	erb :indicadores,:layout => :app,  :locals => {:active=>'indicadores',
+				:partidos=>partidos, #menu
+				:tweets=>tweets_arr,	
+				:news=>news_arr,
+				:candidatos_disueltos=>candidatos_disueltos,
+				:sentenciados=>sentenciados
+
+			}
 end
 
 get '/partidos' do
