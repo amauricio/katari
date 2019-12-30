@@ -534,7 +534,6 @@ vertical-align: middle;
 .dataset .graphs{
 
 	flex:1;
-	padding-left: 40px;
 }
 .title-graph{
 	padding-bottom: 40px;
@@ -831,4 +830,20 @@ vertical-align: middle;
 	display: inline-block;
 	border: 2px dashed #ccc;
 	border-radius: 10px;
+}
+
+.more{
+	text-align: center;
+}
+.more a{
+	border-radius: 10px;
+	padding: 12px;
+	border:2px dashed #555;
+	color:#555;
+	text-decoration: none;
+	display: inline-block;
+}
+.more a:hover{
+	border-color: #111;
+	color:#111;
 }

@@ -408,7 +408,8 @@ get '/indicadores' do
 
 	candidatos_disueltos = $client[:jne].find({"listaCandidato.idCandidato"=>{"$in"=>disueltos()}})
 				.projection(
-					 {"_id"=> 0,"image"=>1,"strOrganizacionPolitica"=>1, "listaCandidato"=> {"$elemMatch"=> {"idCandidato"=> {"$in"=> disueltos() }}}}
+					 {"_id"=> 0,"image"=>1,"strOrganizacionPolitica"=>1, 
+					 	"listaCandidato"=> {"$elemMatch"=> {"idCandidato"=> {"$in"=> disueltos() }}}}
 				)
 
 	
@@ -418,13 +419,13 @@ get '/indicadores' do
 
 	tweets_arr = []
 
-	tweets = $client[:last_tweets].find()
+	tweets = $client[:last_tweets].aggregate([ {"$sort"=> {"tweet.created_at":-1}}, { "$limit"=>2}])
 	tweets.each do |item|
 		tweets_arr << item['tweet']
 	end
 
 	news_arr = []
-	news = $client[:last_news].find()
+	news = $client[:last_news].aggregate([{"$sort"=> {"date":-1}}, {"$limit"=>2}])
 	news.each do |item|
 		news_arr << item
 	end
