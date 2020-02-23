@@ -2,74 +2,95 @@
 <script src="https://www.amcharts.com/lib/4/core.js"></script>
 <script src="https://www.amcharts.com/lib/4/charts.js"></script>
 <script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
-<div class='dataset'>
-	<div class='sidebar'>
-		<a href="" class='all active'><span>TODOS</span></a>
-		<% partidos.each do |item| %>
-			<a href=''>
-				<i><img src='<%= item["image"] %>' /></i>
-				<span><%=  totem(item['orgPolitica']).titleize %></span>
-			</a>
-		<%end %> 
-	</div>
-	<div class='graphs'>
-		<div class='social-twitter panel'>
-			<h3 class='title-graph'>> Algunas Noticias</h3>
-			<div class='br-list br-3'>
-				
-				<% news.sample(9).each do | item|%>
-					<div class='br-element'>
-						<a target="_blank" href="<%=item['link']%>" class='link'></a>
-						<% if item['meta']['image'] %>
-						<div class='preview-media' style='background-image: url("<%= item['meta']['image'] %>");'></div>
-						<% end %>
-						<div class="t-content">
-							<div class="t-preview">
-								<img src="https://encrypted-tbn0.gstatic.com/faviconV2?url=<%=get_host(item['source'])%>&client=NEWS_360&size=96&type=FAVICON&fallback_opts=TYPE,SIZE,URL" >
-							</div>
-							<div class="t-info">
-								<div class="t-info-title"><%= item['meta']['title'] %>
-								</div>
-								<div class="username"><%= item['source'] %></div>
-							</div>
-						</div>
-						<div class="tweet"><%= item['meta']['description'] %></div>
-							
+<div class='filters'>
+    <div class='advanced'>
+		<div class='block'>
+		    	<label>Partidos</label>
+		    	<select id='cbPartidos' class='selectns'>
+					<option value='1' data-image='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAggAAAIICAYAAAAL/BZjAAAABHNCSVQI'>Todos</option>    	
+					<% partidos.each do |item| %>
 
+						<option value='<%=  (item['idOrganizacionPolitica']) %>' data-image='<%= item["image"] %>' selected="true"><%=  totem(item['orgPolitica']).titleize %></option>    	
+					<%end %> 
+		    	</select>
+	    </div>
+    </div>
+	
+</div>
+<div class='dataset'>
+	
+	<div class='graphs'>
+
+		<div class='br-list br-2'>
+			<div class='br-element'>
+				<div class='social-twitter panel'>
+					<h3 class='title-graph'>> Algunas Noticias</h3>
+					<div class='br-list br-2'>
+						
+						<% news.each do | item|%>
+							<div class='br-element'>
+								<a target="_blank" href="<%=item['link']%>" class='link'></a>
+								<% if item['meta']['image'] %>
+								<div class='preview-media' style='background-image: url("<%= item['meta']['image'] %>");'></div>
+								<% end %>
+								<div class="t-content">
+									<div class="t-preview">
+										<img src="https://encrypted-tbn0.gstatic.com/faviconV2?url=<%=get_host(item['source'])%>&client=NEWS_360&size=96&type=FAVICON&fallback_opts=TYPE,SIZE,URL" >
+									</div>
+									<div class="t-info">
+										<div class="t-info-title"><%= item['meta']['title'] %>
+										</div>
+										<div class="username"><%= item['source'] %></div>
+									</div>
+								</div>
+								<div class="tweet"><%= item['meta']['description'] %></div>
+									
+
+							</div>
+						<%end%>
+						
 					</div>
-				<%end%>
-				
+
+					<div class='more'>
+						<a href="">Ver más noticias</a>
+					</div>
+				</div>
+			</div>
+			<div class='br-element'>
+				<div class='social-twitter panel'>
+					<h3 class='title-graph'>> En Twitter</h3>
+					<div class='br-list br-2'>
+						<% tweets.each do | tweet|%>
+							<div class='br-element'>
+								<a target="_blank" href="https://twitter.com/<%= tweet['user']['screen_name'] %>/status/<%= tweet['id_str'] %>" class='link'></a>
+								<div class="t-content">
+									<div class="t-preview">
+										<img src="<%= tweet['user']['profile_image_url'] %>" >
+									</div>
+									<div class="t-info">
+										<div class="t-info-title"><%= tweet['user']['name'] %>
+										</div>
+										<div class="username">@<%= tweet['user']['screen_name'] %></div>
+									</div>
+								</div>
+								<div class="tweet"><%= tweet['full_text'] %>
+									</div>
+									<% if tweet['entities']['media'] %>
+								<a href='' class='preview-media' style='background-image: url("<%= tweet['entities']['media'][0]['media_url'] %>");'>
+									<% end %>
+								</a>
+
+								<div class="t-footer"><span class="icon"><svg viewBox="0 0 24 24" class=" ts" tabindex="-1" focusable="false"><path d="M8.29,20.12A11.58,11.58,0,0,0,20,8.46c0-.18,0-.35,0-.53A8.34,8.34,0,0,0,22,5.8a8.18,8.18,0,0,1-2.35.64,4.11,4.11,0,0,0,1.8-2.27,8.21,8.21,0,0,1-2.6,1,4.1,4.1,0,0,0-7,3.74A11.64,11.64,0,0,1,3.4,4.63,4.1,4.1,0,0,0,4.67,10.1a4.07,4.07,0,0,1-1.86-.51v.05a4.1,4.1,0,0,0,3.29,4,4.09,4.09,0,0,1-1.85.07,4.1,4.1,0,0,0,3.83,2.85A8.23,8.23,0,0,1,3,18.34a8.34,8.34,0,0,1-1-.06,11.61,11.61,0,0,0,6.28,1.84"></path></svg>Twitter</span><time class="time" datetime=""><%= tweet['created_at'] %></time></div>
+							</div>
+						<% end %>
+						
+						
+					</div>
+					<div class='more'>
+						<a href="">Ver más tweets</a>
+					</div>
 			</div>
 		</div>
-		<div class='social-twitter panel'>
-			<h3 class='title-graph'>> En Twitter</h3>
-			<div class='br-list br-3'>
-				<% tweets.sample(9).each do | tweet|%>
-					<div class='br-element'>
-						<a target="_blank" href="https://twitter.com/<%= tweet['user']['screen_name'] %>/status/<%= tweet['id_str'] %>" class='link'></a>
-						<div class="t-content">
-							<div class="t-preview">
-								<img src="<%= tweet['user']['profile_image_url'] %>" >
-							</div>
-							<div class="t-info">
-								<div class="t-info-title"><%= tweet['user']['name'] %>
-								</div>
-								<div class="username">@<%= tweet['user']['screen_name'] %></div>
-							</div>
-						</div>
-						<div class="tweet"><%= tweet['full_text'] %>
-							</div>
-							<% if tweet['entities']['media'] %>
-						<a href='' class='preview-media' style='background-image: url("<%= tweet['entities']['media'][0]['media_url'] %>");'>
-							<% end %>
-						</a>
-
-						<div class="t-footer"><span class="icon"><svg viewBox="0 0 24 24" class=" ts" tabindex="-1" focusable="false"><path d="M8.29,20.12A11.58,11.58,0,0,0,20,8.46c0-.18,0-.35,0-.53A8.34,8.34,0,0,0,22,5.8a8.18,8.18,0,0,1-2.35.64,4.11,4.11,0,0,0,1.8-2.27,8.21,8.21,0,0,1-2.6,1,4.1,4.1,0,0,0-7,3.74A11.64,11.64,0,0,1,3.4,4.63,4.1,4.1,0,0,0,4.67,10.1a4.07,4.07,0,0,1-1.86-.51v.05a4.1,4.1,0,0,0,3.29,4,4.09,4.09,0,0,1-1.85.07,4.1,4.1,0,0,0,3.83,2.85A8.23,8.23,0,0,1,3,18.34a8.34,8.34,0,0,1-1-.06,11.61,11.61,0,0,0,6.28,1.84"></path></svg>Twitter</span><time class="time" datetime=""><%= tweet['created_at'] %></time></div>
-					</div>
-				<% end %>
-				
-				
-			</div>
 		</div>
 		<div class='graph'>
 			<h3 class='title-graph'>> Sentencias civiles por partido</h3>
@@ -131,6 +152,19 @@
 	</div>
 </div>
 <script>
+
+
+function formatState (state) {
+  var $state = $(
+    '<span><img width="20" src="' + $(state.element).data('image') + '" /> ' + state.text +     '</span>'
+ );
+ return $state;
+};
+
+$("#cbPartidos").select2({
+  templateResult: 	formatState
+});
+
 am4core.ready(function() {
 
 	new create_chart([
