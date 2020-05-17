@@ -2,8 +2,9 @@ data__fs = {page:1, region:'Lima'};
 FIRST_TIME = true;
 already__data = false;
 if(localStorage.getItem('data__fs')){
+  //console.log(localStorage.getItem('data__fs'))
   var js = JSON.parse(localStorage.getItem('data__fs'))
-  data__fs = js;
+  data__fs = {"page":1,"region":"Lima","q":"","sentencias":"2","estudios":"2","cargo":"2"};
   already__data=true;
 }
 
@@ -19,11 +20,11 @@ window.onload = function(){
 
   if(already__data){
 
-    if('sentencias' in data__fs)
-    $('#cbSentencias').val(data__fs['sentencias'])
+   // if('sentencias' in data__fs)
+   // $('#cbSentencias').val(data__fs['sentencias'])
 
-    if('q' in data__fs)
-    $('.instantSearch').val(data__fs['q'])
+   // if('q' in data__fs)
+   // $('.instantSearch').val(data__fs['q'])
   }
 
   $('.select').select2();
@@ -74,8 +75,8 @@ window.onload = function(){
        $('.main').html('<img width="50" src="/giphy.gif" />');
     }
     function set__value__data(name, value){
-      data__fs[name] = value;
-      localStorage.setItem('data__fs', JSON.stringify(data__fs));
+      //data__fs[name] = value;
+      //localStorage.setItem('data__fs', JSON.stringify(data__fs));
     }  
     function reload_items(){
        infScroll.destroy();

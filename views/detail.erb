@@ -59,41 +59,6 @@
 <div class='detail'>
 
         <div class='cards'>
-        	<h3>Experiencia laboral</h3>
-              <% if person["countExpLaboral"] >= 1 %>
-                 <% person['expLaboral'].sort_by {|obj| -obj['strAnioTrabajoDesde'].to_i}.each do |exp| %>
-                  
-                     <div class='card'>
-                     	<div class='heading'>
-	                     	<span class='label'>
-	                    	<%=  exp["strAnioTrabajoDesde"] %>
-	                     		-
-	                     		   <% if exp["strAnioTrabajoHasta"] == "0000" %>
-	                     		   Actualidad
-	                    <% else %>
-	                    	<%=  exp["strAnioTrabajoHasta"] %>
-	                    <% end %>
-	                     	</span>
-	                     </div>
-                        <b><%= exp['strOcupacionProfesion'].titleize %></b>
-                        <br>En
-                        <%= exp['strCentroTrabajo'].titleize %>
-                     	<div class='footer'>
-	                        <%= exp['strTrabajoPais'].titleize %> -
-	                        <%= exp['strTrabajoDepartamento'].titleize %>
-                     	</div>
-                    </div>
-                 <% end %>
-                
-            <% else %>
-            <b>No registra ninguna</b>
-            <% end %>
-        </div>
-</div>
-
-<div class='detail'>
-
-        <div class='cards'>
         	<h3>Educación superior</h3>
               <% if person["edSuperior"] >= 1 %>
               	<% person['eduPosgrado'].each do |edu| %>
@@ -155,6 +120,101 @@
                        <b><%= edu['strCarreraTecnico'].titleize %></b>
                         <br>
                         <%= edu['strCenEstudioTecnico'].titleize %>
+                    </div>
+                 <% end %>
+                
+            <% else %>
+            <b>No registra ninguna</b>
+            <% end %>
+        </div>
+</div>
+<div class='detail'>
+
+        <div class='cards'>
+        	<h3>Experiencia laboral</h3>
+              <% if person["countExpLaboral"] >= 1 %>
+                 <% person['expLaboral'].sort_by {|obj| -obj['strAnioTrabajoDesde'].to_i}.each do |exp| %>
+                  
+                     <div class='card'>
+                     	<div class='heading'>
+	                     	<span class='label'>
+	                    	<%=  exp["strAnioTrabajoDesde"] %>
+	                     		-
+	                     		   <% if exp["strAnioTrabajoHasta"] == "0000" %>
+	                     		   Actualidad
+	                    <% else %>
+	                    	<%=  exp["strAnioTrabajoHasta"] %>
+	                    <% end %>
+	                     	</span>
+	                     </div>
+                        <b><%= exp['strOcupacionProfesion'].titleize %></b>
+                        <br>En
+                        <%= exp['strCentroTrabajo'].titleize %>
+                     	<div class='footer'>
+	                        <%= exp['strTrabajoPais'].titleize %> -
+	                        <%= exp['strTrabajoDepartamento'].titleize %>
+                     	</div>
+                    </div>
+                 <% end %>
+                
+            <% else %>
+            <b>No registra ninguna</b>
+            <% end %>
+        </div>
+</div>
+
+
+<div class='detail'>
+
+        <div class='cards'>
+        	<h3>Bienes Muebles</h3>
+              <% if person["countBienInmueble"] >= 1 %>
+                 <% person['bienInmueble'].each do |exp| %>
+                  
+                     <div class='card'>
+                     	<div class='heading'>
+	                     	<span class='label'>
+	                    	S/. <%=  exp["decAutovaluo"] %>
+	                     	</span>
+	                     </div>
+                        <b><%= exp['strTipoBienInmueble'].titleize %></b>
+                        <br>En
+                        <%= exp['strInmuebleDireccion'].titleize %>
+                     	<div class='footer'>
+	                        <%= exp['strInmueblePais'].titleize %> -
+	                        <%= exp['strInmuebleDepartamento'].titleize %>-
+	                        <%= exp['strInmuebleDistrito'].titleize %>
+                     	</div>
+                    </div>
+                 <% end %>
+                
+            <% else %>
+            <b>No registra ninguna</b>
+            <% end %>
+        </div>
+</div>
+
+<div class='detail'>
+
+        <div class='cards'>
+        	<h3>Bienes Inmuebles</h3>
+              <% if person["countBienMueble"] >= 1 %>
+                 <% person['bienMueble'].each do |exp| %>
+                  
+                     <div class='card'>
+                     	<div class='heading'>
+	                     	<span class='label'>
+	                    	S/. <%=  exp["decValor"] %>
+	                     	</span>
+	                     </div>
+                        <b><%= exp['strVehiculo'].titleize %></b>
+                        <br>
+                        <%= exp['strMarca'].titleize %>
+                     	<div class='footer'>
+	                        <%= exp['strAnio'].titleize %> -
+	                        <%= exp['strPlaca'].titleize %>-
+	                        <%= exp['strCaracteristica'].titleize %>
+                     	</div>
                     </div>
                  <% end %>
                 

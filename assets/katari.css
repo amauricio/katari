@@ -488,6 +488,7 @@ vertical-align: middle;
 	color:#999;
 }
 .cards .card{
+	max-width: 320px;
 	margin-bottom: 10px;
 	margin-right: 8px;
 	line-height: 1.4;

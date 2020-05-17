@@ -71,6 +71,9 @@ def base()
      {"$unwind"=> "$listaCandidato.eduTecnico"},
      {"$unwind"=> "$listaCandidato.eduUniversitaria"},
 
+     {"$unwind"=> "$listaCandidato.bienInmueble"},
+     {"$unwind"=> "$listaCandidato.bienMueble"},
+
      {"$unwind"=> "$listaCandidato.renunciaOP"},
      {"$unwind"=> "$listaCandidato.expLaboral"},
      {"$unwind"=> "$listaCandidato.GetAllHVCargoPartidario"},
@@ -91,6 +94,10 @@ def base()
 
          "expLaboral" => {"$addToSet"=> "$listaCandidato.expLaboral"  },
          "cargoPartidario" => {"$addToSet"=> "$listaCandidato.GetAllHVCargoPartidario"  },
+
+         "bienInmueble" => {"$addToSet"=> "$listaCandidato.bienInmueble"  },
+         "bienMueble" => {"$addToSet"=> "$listaCandidato.bienMueble"  },
+
 
          "noUniversitaria" => {"$addToSet"=> "$listaCandidato.noUniversitaria"  },
          "eduTecnico" => {"$addToSet"=> "$listaCandidato.eduTecnico"  },
@@ -183,6 +190,24 @@ def base()
                         
                   }
               
+              },"bienMueble"=> {
+                  "$filter"=> {
+                    "input"=> "$bienMueble",
+                    "as"=> "item",
+                    "cond"=>  
+                            {"$eq"=> ["$$item.strTengoBienMueble", "1"] }
+                        
+                  }
+              
+              },"bienInmueble"=> {
+                  "$filter"=> {
+                    "input"=> "$bienInmueble",
+                    "as"=> "item",
+                    "cond"=>  
+                            {"$eq"=> ["$$item.strTengoInmueble", "1"] }
+                        
+                  }
+              
               },"cargoPartidario"=> {
                   "$filter"=> {
                     "input"=> "$cargoPartidario",
@@ -198,6 +223,8 @@ def base()
              	"countRenunciaOP" => {"$sum"=> [ {"$size"=>"$renunciaOP"} ]},
              	"countExpLaboral" => {"$sum"=> [ {"$size"=>"$expLaboral"} ]},
              	"countCargoPartidario" => {"$sum"=> [ {"$size"=>"$cargoPartidario"} ]},
+             	"countBienInmueble" => {"$sum"=> [ {"$size"=>"$bienInmueble"} ]},
+             	"countBienMueble" => {"$sum"=> [ {"$size"=>"$bienMueble"} ]},
              	"edSuperior" => {"$sum"=> [ {"$size"=>"$noUniversitaria"}, {"$size"=>"$eduTecnico"}, {"$size"=>"$eduUniversitaria"} ]}}
 
              },
@@ -321,6 +348,9 @@ get '/grid-personas' do
 
 	fs_match = []
 	search = params[:q]
+	search = search.gsub(" ",'(.+)')
+	print(">>>>>")
+	print(search)
 	if search
 	   	fs_match <<  { "$match"=> { "listaCandidato.strCandidato"=> { "$regex"=> /#{search}/i } }}
     end
