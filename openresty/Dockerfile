@@ -14,5 +14,5 @@ WORKDIR /filters
 ADD nginx.conf /usr/local/openresty/nginx/conf/
 ADD middleware.lua /filters
 
-ADD 0000_csr-certbot.csr /home/0000_csr-certbot.csr
-ADD 0000_key-certbot.key /home/0000_key-certbot.key
+ADD fullchain.pem /home/fullchain.pem
+ADD privkey.pem /home/privkey.pem

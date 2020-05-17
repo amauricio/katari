@@ -51,6 +51,7 @@ headers = {
 		"content-type":"application/json", 'User-Agent':"Mozilla/5.0 (Linux; Android 5.0; SM-G920A) AppleWebKit (KHTML, like Gecko) Chrome Mobile Safari (compatible; AdsBot-Google-Mobile; +http://www.google.com/mobile/adsbot.html)"}
 
 $base = "108"
+
 $client = Mongo::Client.new([ 'katari_mongo:27017' ], :database => 'remote_6_enero')
 
 def pushDatosPersonales(hash)
